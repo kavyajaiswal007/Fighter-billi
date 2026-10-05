@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 import database
 from documents import chunk_pages, extract_text
-from rag import answer_question, embed
+from rag import answer_question, embed, embed_batch
 
 app = FastAPI(title="Fighter Billi API")
 
@@ -48,14 +48,16 @@ async def upload(file: UploadFile = File(...)):
         database.upload_file(path, data, file.content_type or "application/octet-stream")
         document = database.create_document(file.filename, path, file_type)
 
-        rows = []
-        for chunk in chunks:
-            rows.append({
+        embeddings = embed_batch([chunk["content"] for chunk in chunks])
+        rows = [
+            {
                 "document_id": document["id"],
                 "content": chunk["content"],
                 "page_number": chunk["page"],
-                "embedding": embed(chunk["content"]),
-            })
+                "embedding": emb,
+            }
+            for chunk, emb in zip(chunks, embeddings)
+        ]
         database.insert_chunks(rows)
         return {"document": document, "chunks": len(rows)}
     except HTTPException:

@@ -27,6 +27,18 @@ def embed(text):
     return result.embeddings[0].values
 
 
+def embed_batch(texts):
+    if not texts:
+        return []
+    client = gemini()
+    result = client.models.embed_content(
+        model=EMBEDDING_MODEL,
+        contents=texts,
+        config=types.EmbedContentConfig(output_dimensionality=768),
+    )
+    return [e.values for e in result.embeddings]
+
+
 def answer_question(question, chunks):
     if not chunks:
         return "I could not find that answer in the uploaded documents."

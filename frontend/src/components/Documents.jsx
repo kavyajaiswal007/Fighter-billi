@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { deleteDocument, getDocuments, uploadDocument } from '../api'
+import { deleteDocument, getDocumentUrl, getDocuments, uploadDocument } from '../api'
 
 export default function Documents() {
   const [docs, setDocs] = useState([])
@@ -18,6 +18,30 @@ export default function Documents() {
       setStatus('')
     } catch (err) {
       setStatus(err.message)
+    }
+  }
+
+  async function viewDoc(id) {
+    try {
+      const res = await getDocumentUrl(id)
+      if (res?.url) window.open(res.url, '_blank')
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
+  async function downloadDoc(id, name) {
+    try {
+      const res = await getDocumentUrl(id)
+      if (res?.url) {
+        const a = document.createElement('a')
+        a.href = res.url
+        a.download = name
+        a.target = '_blank'
+        a.click()
+      }
+    } catch (err) {
+      alert(err.message)
     }
   }
 
@@ -141,14 +165,8 @@ export default function Documents() {
               </div>
             </div>
             <div className="doc-actions">
-              {doc.url && (
-                <>
-                  <button className="btn-ghost" onClick={() => window.open(doc.url, '_blank')}>View</button>
-                  <a href={doc.url} download style={{ textDecoration: 'none' }}>
-                    <button className="btn-ghost">↓</button>
-                  </a>
-                </>
-              )}
+              <button className="btn-ghost" onClick={() => viewDoc(doc.id)}>View</button>
+              <button className="btn-ghost" onClick={() => downloadDoc(doc.id, doc.name)}>↓</button>
               <button className="btn-danger" onClick={() => remove(doc.id, doc.name)}>✕ Delete</button>
             </div>
           </div>

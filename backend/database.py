@@ -72,13 +72,7 @@ def insert_chunks(rows):
 
 def list_documents():
     db = client()
-    docs = db.table("documents").select("*").order("created_at", desc=True).execute().data
-    for doc in docs:
-        try:
-            doc["url"] = db.storage.from_(BUCKET).create_signed_url(doc["file_path"], 3600)["signedURL"]
-        except Exception:
-            doc["url"] = ""
-    return docs
+    return db.table("documents").select("*").order("created_at", desc=True).execute().data
 
 
 def delete_document(document_id):

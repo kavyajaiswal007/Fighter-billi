@@ -23,4 +23,6 @@ export const uploadDocument = async (file) => {
 
 export const getDocuments = async () => request('/documents')
 
+export const getDocumentUrl = async (id) => request(`/documents/${id}/url`)
+
 export const deleteDocument = async (id) => request(`/documents/${id}`, { method: 'DELETE' })
