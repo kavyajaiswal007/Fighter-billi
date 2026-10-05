@@ -1,4 +1,15 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api/backend'
+function getBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL !== '/api/backend') {
+    return process.env.NEXT_PUBLIC_API_URL
+  }
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname
+    if (host !== 'localhost' && host !== '127.0.0.1') {
+      return 'https://fighter-billi.onrender.com'
+    }
+  }
+  return '/api/backend'
+}
 
 export type DocumentItem = {
   id: string
@@ -20,7 +31,8 @@ export type AskResponse = {
 }
 
 async function request<T = any>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, options)
+  const baseUrl = getBaseUrl()
+  const response = await fetch(`${baseUrl}${path}`, options)
   const data = await response.json().catch(() => ({}))
   if (!response.ok) {
     throw new Error(data.detail || 'Request failed')

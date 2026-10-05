@@ -10,7 +10,10 @@ const nextConfig = {
     return [
       {
         source: '/api/backend/:path*',
-        destination: 'http://127.0.0.1:8000/:path*',
+        destination:
+          process.env.NODE_ENV === 'production'
+            ? 'https://fighter-billi.onrender.com/:path*'
+            : 'http://127.0.0.1:8000/:path*',
       },
     ]
   },
