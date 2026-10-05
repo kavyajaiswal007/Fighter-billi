@@ -3,7 +3,6 @@ import re
 from math import sqrt
 
 from dotenv import load_dotenv
-from supabase import create_client
 
 load_dotenv()
 
@@ -31,8 +30,23 @@ def clean_env(value):
     return value.rstrip("/")
 
 
+import httpx
+from supabase import ClientOptions, create_client
+
+_client = None
+
+
 def client():
-    return create_client(env("SUPABASE_URL"), env("SUPABASE_SECRET_KEY"))
+    global _client
+    if _client is None:
+        http_client = httpx.Client(http2=True, timeout=30.0)
+        options = ClientOptions(
+            httpx_client=http_client,
+            postgrest_client_timeout=30,
+            storage_client_timeout=30,
+        )
+        _client = create_client(env("SUPABASE_URL"), env("SUPABASE_SECRET_KEY"), options=options)
+    return _client
 
 
 def upload_file(path, data, content_type):
@@ -60,7 +74,10 @@ def list_documents():
     db = client()
     docs = db.table("documents").select("*").order("created_at", desc=True).execute().data
     for doc in docs:
-        doc["url"] = db.storage.from_(BUCKET).create_signed_url(doc["file_path"], 3600)["signedURL"]
+        try:
+            doc["url"] = db.storage.from_(BUCKET).create_signed_url(doc["file_path"], 3600)["signedURL"]
+        except Exception:
+            doc["url"] = ""
     return docs
 
 
