@@ -10,24 +10,44 @@ BUCKET = "documents"
 DEFAULT_SUPABASE_URL = "https://lxvwvoppjffswnbsvktf.supabase.co"
 
 
-def env(name):
-    value = os.getenv(name)
-    if name == "SUPABASE_URL" and not value:
-        return DEFAULT_SUPABASE_URL
+def clean_url(value):
     if not value:
-        raise RuntimeError(f"Missing environment variable: {name}")
-    value = clean_env(value)
-    if name == "SUPABASE_URL" and not value.startswith("https://"):
         return DEFAULT_SUPABASE_URL
-    return value
-
-
-def clean_env(value):
     value = value.strip().strip('"').strip("'").replace("\\", "")
     url = re.search(r"https?://[^\s)\]>\"']+", value)
     if url:
         value = url.group(0)
     return value.rstrip("/")
+
+
+def clean_key(value):
+    if not value:
+        return ""
+    return value.strip().strip('"').strip("'")
+
+
+def env(name):
+    if name == "SUPABASE_URL":
+        val = os.getenv("SUPABASE_URL") or os.getenv("SUPABASE_PROJECT_URL")
+        if not val or not clean_url(val).startswith("https://"):
+            return DEFAULT_SUPABASE_URL
+        return clean_url(val)
+
+    if name in ("SUPABASE_SECRET_KEY", "SUPABASE_SERVICE_ROLE_KEY"):
+        val = (
+            os.getenv("SUPABASE_SECRET_KEY")
+            or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+            or os.getenv("SUPABASE_KEY")
+            or os.getenv("SUPABASE_PUBLISHABLE_KEY")
+        )
+        if not val:
+            raise RuntimeError("Missing SUPABASE_SECRET_KEY environment variable")
+        return clean_key(val)
+
+    value = os.getenv(name)
+    if not value:
+        raise RuntimeError(f"Missing environment variable: {name}")
+    return clean_key(value)
 
 
 import httpx
