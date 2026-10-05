@@ -14,7 +14,7 @@ def gemini():
     key = os.getenv("GEMINI_API_KEY")
     if not key:
         raise RuntimeError("Missing environment variable: GEMINI_API_KEY")
-    return genai.Client(api_key=key)
+    return genai.Client(api_key=key.strip().strip('"').strip("'").replace("\\", ""))
 
 
 def embed(text):

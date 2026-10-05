@@ -13,7 +13,14 @@ def env(name):
     value = os.getenv(name)
     if not value:
         raise RuntimeError(f"Missing environment variable: {name}")
-    return value
+    return clean_env(value)
+
+
+def clean_env(value):
+    value = value.strip().strip('"').strip("'").replace("\\", "")
+    if "](" in value and value.endswith(")"):
+        value = value.split("](", 1)[1][:-1]
+    return value.rstrip("/")
 
 
 def client():
