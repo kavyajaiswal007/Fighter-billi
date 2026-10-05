@@ -8,13 +8,19 @@ from supabase import create_client
 load_dotenv()
 
 BUCKET = "documents"
+DEFAULT_SUPABASE_URL = "https://lxvwvoppjffswnbsvktf.supabase.co"
 
 
 def env(name):
     value = os.getenv(name)
+    if name == "SUPABASE_URL" and not value:
+        return DEFAULT_SUPABASE_URL
     if not value:
         raise RuntimeError(f"Missing environment variable: {name}")
-    return clean_env(value)
+    value = clean_env(value)
+    if name == "SUPABASE_URL" and not value.startswith("https://"):
+        return DEFAULT_SUPABASE_URL
+    return value
 
 
 def clean_env(value):
