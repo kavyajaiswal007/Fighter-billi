@@ -12,7 +12,7 @@ app = FastAPI(title="Fighter Billi API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"http://(localhost|127\.0\.0\.1):517[0-9]",
+    allow_origin_regex=r"https://.*\.vercel\.app|http://(localhost|127\.0\.0\.1):517[0-9]",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
