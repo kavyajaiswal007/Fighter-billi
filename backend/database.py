@@ -1,4 +1,5 @@
 import os
+import re
 from math import sqrt
 
 from dotenv import load_dotenv
@@ -18,8 +19,9 @@ def env(name):
 
 def clean_env(value):
     value = value.strip().strip('"').strip("'").replace("\\", "")
-    if "](" in value and value.endswith(")"):
-        value = value.split("](", 1)[1][:-1]
+    url = re.search(r"https?://[^\s)\]>\"']+", value)
+    if url:
+        value = url.group(0)
     return value.rstrip("/")
 
 
