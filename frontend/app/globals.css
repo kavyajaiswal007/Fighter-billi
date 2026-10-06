@@ -138,14 +138,25 @@ button { cursor: pointer; }
 body { line-height: 1.6; }
 
 /* Compact, specific interface pass. */
-.sidebar { width: 260px; flex-basis: 260px; padding: 16px; gap: 12px; min-height: auto; align-self: flex-start; }
+.sidebar {
+  width: 260px;
+  flex-basis: 260px;
+  padding: 16px;
+  gap: 12px;
+  min-height: auto;
+  align-self: flex-start;
+  background: rgba(182, 202, 190, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 16px 40px rgba(32, 54, 42, 0.16), inset 0 1px rgba(255, 255, 255, 0.6);
+}
 .brand-lockup { padding: 0 0 8px; margin: 0; }
 .logo-lockup { margin: 0 0 8px; }
 .full-logo { width: 100%; max-width: 230px; border-radius: 8px; }
 .sidebar nav { display: flex; flex-direction: column; gap: 4px; }
 .sidebar nav .eyebrow { display: none; }
-.nav-item { padding: 10px 12px; margin: 0; border-radius: 8px; gap: 12px; font-size: 14px; white-space: nowrap; }
-.nav-item.active { background: rgba(255,255,255,.72); border: 1px solid rgba(74,143,117,.24); color: var(--sage); box-shadow: none; }
+.nav-item { padding: 10px 12px; margin: 0; border-radius: 8px; gap: 12px; font-size: 14px; white-space: nowrap; color: #31463a; font-weight: 500; }
+.nav-item:hover { background: rgba(255, 255, 255, 0.35); color: var(--ink); }
+.nav-item.active { background: rgba(255, 255, 255, 0.88); border: 1px solid rgba(74, 143, 117, 0.28); color: var(--sage); box-shadow: 0 4px 14px rgba(32, 54, 42, 0.08); }
 .nav-arrow { display: none; }
 .card-heading h3 { font-size: 16px; font-weight: 600; }
 .activity-card, .flow-card { padding: 20px; }

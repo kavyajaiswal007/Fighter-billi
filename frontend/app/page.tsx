@@ -63,7 +63,7 @@ export default function Page() {
   const [isAsking, setIsAsking] = useState(false)
   const [search, setSearch] = useState('')
   const [activities, setActivities] = useState<ActivityItem[]>([
-    { icon: '✦', title: 'Fighter Billi online', meta: 'Connected to Gemini & Supabase', time: 'Just now' },
+    { icon: '✦', title: 'Fighter Billi online', meta: 'Connected to AI & Supabase', time: 'Just now' },
   ])
 
   const fileRef = useRef<HTMLInputElement>(null)
@@ -106,7 +106,7 @@ export default function Page() {
     }
 
     setUploading(true)
-    setUploadStatus(`Indexing "${file.name}" with Gemini AI...`)
+    setUploadStatus(`Indexing "${file.name}" with AI...`)
     try {
       const res = await uploadDocument(file)
       setUploadStatus(`✓ Uploaded "${res.document.name}" — ${res.chunks} searchable chunks created.`)
@@ -321,7 +321,7 @@ function Overview({
           <small>Questions answered</small>
           <strong>{conversationCount}</strong>
           <p>
-            <b>Gemini RAG</b> enabled
+            <b>AI RAG</b> enabled
           </p>
         </div>
         <div className="stat-card glass-panel">
